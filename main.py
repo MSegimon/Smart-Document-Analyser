@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
+from loginFunctions import login, is_session_cookie_valid
 
 app = FastAPI()
 
@@ -12,6 +13,17 @@ class UserCreate(BaseModel):
     password: str
     email: str
 
+class GetUser(BaseModel):
+    username: Optional[str] = None
+    id: Optional[int] = None
+
+class DeleteUser(BaseModel):
+    id: int
+
+class Login(BaseModel):
+    username: str
+    password: str
+
 
 # Hello World Call
 @app.get("/")
@@ -20,25 +32,21 @@ async def hello_world():
 
 
 # User Calls
-@app.post("/user") # Creating a new user
+@app.post("/create_user") # Creating a new user
 async def create_new_user(user: UserCreate):
     create_user(user.username, user.password, user.email)
     return {"message": "User created successfully."}
 
 @app.get("/user") # Getting user by ID or username
-async def get_user(request: Request):
-    query_params = request.query_params
-    username = query_params.get('username')
-    user_id = query_params.get('id')
-    
-    if username:
-        user_data = get_user_data_by_name(username)
+async def get_user(get_user: GetUser):
+    if get_user.username:
+        user_data = get_user_data_by_name(get_user.username)
         if user_data:
             return user_data
         else:
             raise HTTPException(status_code=404, detail="User not found.")
-    elif user_id:
-        user_data = get_user_data_by_id(user_id)
+    elif get_user.id:
+        user_data = get_user_data_by_id(get_user.id)
         if user_data:
             return user_data
         else:
@@ -46,11 +54,10 @@ async def get_user(request: Request):
     else:
         raise HTTPException(status_code=400, detail="Invalid request.")
     
-
+    
 @app.post("/delete_user") # Deleting a user by ID
-async def delete_user_by_id(request: Request):
-    query_params = request.query_params
-    user_id = query_params.get('id')
+async def delete_user(delete_user: DeleteUser):
+    user_id = delete_user.id
     
     if user_id:
         user_data = get_user_data_by_id(user_id)
@@ -62,6 +69,15 @@ async def delete_user_by_id(request: Request):
     else:
         raise HTTPException(status_code=400, detail="Invalid request.")
 
+
+# Login Calls
+@app.post("/login") # Login function
+async def user_login(login_data: Login):
+    session_cookie, timestamp = login(login_data.username, login_data.password)
+    if session_cookie:
+        return {"session_cookie": session_cookie, "timestamp": timestamp}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials.")
 
 
 if __name__ == '__main__':

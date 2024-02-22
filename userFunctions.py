@@ -64,7 +64,9 @@ def get_user_data_by_name(username):
                 "id": result[0],
                 "username": result[1],
                 "password": result[2],
-                "email": result[3]
+                "email": result[3],
+                "session_cookie": result[4],
+                "session_cookie_timestamp": result[5]
             }
         else:
             return None
@@ -98,7 +100,9 @@ def get_user_data_by_id(id):
                 "id": result[0],
                 "username": result[1],
                 "password": result[2],
-                "email": result[3]
+                "email": result[3],
+                "session_cookie": result[4],
+                "session_cookie_timestamp": result[5]
             }
         else:
             return None
