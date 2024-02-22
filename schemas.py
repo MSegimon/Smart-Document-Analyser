@@ -20,3 +20,15 @@ class Login(BaseModel):
 
 class SessionCookie(BaseModel):
     session_cookie: str
+
+class FileUpload(BaseModel):
+    url: str
+    session_cookie: str
+
+class FileDelete(BaseModel):
+    id: int
+    session_cookie: str
+
+class FileGet(BaseModel):
+    id: int
+    session_cookie: str

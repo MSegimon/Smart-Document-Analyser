@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, Request
 
-from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie
+from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie, FileUpload, FileGet, FileDelete
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
 from loginFunctions import login, is_session_cookie_valid, logout
+from fileFunctions import upload_file, get_file_by_id, delete_file_by_id
 
 app = FastAPI()
 
@@ -73,6 +74,35 @@ async def user_logout(session_cookie: SessionCookie):
     if is_session_cookie_valid(session_cookie.session_cookie):
         logout(session_cookie.session_cookie)
         return {"message": "User logged out successfully."}
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+
+
+# File Calls
+@app.post("/file/upload")  # Upload file
+async def upload_file_endpoint(file_upload: FileUpload):
+    if is_session_cookie_valid(file_upload.session_cookie):
+        upload_file(file_upload.url, file_upload.session_cookie)
+        return {"message": "File uploaded successfully."}
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+    
+@app.get("/file/get")  # Get file by ID
+async def get_file(file_get: FileGet):
+    if is_session_cookie_valid(file_get.session_cookie):
+        file_data = get_file_by_id(file_get.id, file_get.session_cookie)
+        if file_data:
+            return file_data
+        else:
+            raise HTTPException(status_code=404, detail="File not found.")
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+    
+@app.delete("/file/delete")  # Delete file by ID
+async def delete_file(file_delete: FileDelete):
+    if is_session_cookie_valid(file_delete.session_cookie):
+        delete_file_by_id(file_delete.id, file_delete.session_cookie)
+        return {"message": "File deleted successfully."}
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
 

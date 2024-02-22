@@ -5,8 +5,9 @@ import mysql.connector
 from db import getDBCursor, mydb
 from userFunctions import get_user_data_by_name, verify_password_bcrypt
 
-def generate_session_cookie():
+def generate_session_cookie(id):
     session_cookie = str(uuid.uuid4())
+    session_cookie = str(id) + '-' + session_cookie
     timestamp = int(time.time())
     return session_cookie, timestamp
 
@@ -37,7 +38,7 @@ def login(username, password):
     
     if user_data:
         if verify_password_bcrypt(user_data['password'], password):
-            session_cookie, timestamp = generate_session_cookie()
+            session_cookie, timestamp = generate_session_cookie(user_data['id'])
             user_id = user_data['id']
             insert_session_cookie(user_id, session_cookie, timestamp)
             return session_cookie, timestamp
