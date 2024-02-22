@@ -1,32 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
-from typing import Optional
 
+from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
 from loginFunctions import login, is_session_cookie_valid, logout
 
 app = FastAPI()
-
-# Define Pydantic models for data validation
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    email: str
-
-class GetUser(BaseModel):
-    username: Optional[str] = None
-    id: Optional[int] = None
-
-class DeleteUser(BaseModel):
-    id: int
-
-class Login(BaseModel):
-    username: str
-    password: str
-
-class SessionCookie(BaseModel):
-    session_cookie: str
-
 
 # Hello World Call
 @app.get("/")
