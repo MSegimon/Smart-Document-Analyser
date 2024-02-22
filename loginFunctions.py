@@ -56,7 +56,7 @@ def is_session_cookie_valid(session_cookie):
     try:
         # SQL query to get user by session cookie and timestamp
         query = "SELECT * FROM users WHERE session_cookie = %s"
-        values = (session_cookie)
+        values = (session_cookie,)
         
         # Execute the SQL command
         mycursor.execute(query, values)
@@ -64,12 +64,33 @@ def is_session_cookie_valid(session_cookie):
         # Fetch the result
         result = mycursor.fetchone()
         
-        if result and result[5] - int(time.time()) < 3600:
+        if result and int(time.time()) - result[5] < 3600:
             print("Session cookie is valid.")
             return True
         else:
             print("Session cookie is invalid or expired.")
             return False
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        # Close the cursor and connection
+        mycursor.close()
+
+# Logout function
+def logout(session_cookie):
+    # Get the database cursor
+    mycursor = getDBCursor()
+    
+    try:
+        # SQL query to delete session cookie and timestamp
+        query = "UPDATE users SET session_cookie = '', session_cookie_timestamp = 0 WHERE session_cookie = %s"
+        values = (session_cookie,)
+        
+        # Execute the SQL command
+        mycursor.execute(query, values)
+        
+        # Commit the changes
+        mydb.commit()
     except mysql.connector.Error as err:
         print(f"Error: {err}")
     finally:

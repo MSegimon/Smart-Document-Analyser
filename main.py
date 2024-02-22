@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
-from loginFunctions import login, is_session_cookie_valid
+from loginFunctions import login, is_session_cookie_valid, logout
 
 app = FastAPI()
 
@@ -23,6 +23,9 @@ class DeleteUser(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
+
+class SessionCookie(BaseModel):
+    session_cookie: str
 
 
 # Hello World Call
@@ -58,7 +61,7 @@ async def get_user(get_user: GetUser):
 @app.post("/delete_user") # Deleting a user by ID
 async def delete_user(delete_user: DeleteUser):
     user_id = delete_user.id
-    
+
     if user_id:
         user_data = get_user_data_by_id(user_id)
         if user_data:
@@ -71,13 +74,29 @@ async def delete_user(delete_user: DeleteUser):
 
 
 # Login Calls
-@app.post("/login") # Login function
+@app.get("/login")  # Login function
 async def user_login(login_data: Login):
-    session_cookie, timestamp = login(login_data.username, login_data.password)
-    if session_cookie:
+    login_result = login(login_data.username, login_data.password)
+    if login_result is not None:
+        session_cookie, timestamp = login_result
         return {"session_cookie": session_cookie, "timestamp": timestamp}
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials.")
+
+@app.post("/is_session_cookie_valid")  # Check if the session cookie is valid
+async def check_session_cookie(session_cookie: SessionCookie):
+    if is_session_cookie_valid(session_cookie.session_cookie):
+        return {"message": "Session cookie is valid."}
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+    
+@app.post("/logout")  # Logout function
+async def user_logout(session_cookie: SessionCookie):
+    if is_session_cookie_valid(session_cookie.session_cookie):
+        logout(session_cookie.session_cookie)
+        return {"message": "User logged out successfully."}
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
 
 
 if __name__ == '__main__':

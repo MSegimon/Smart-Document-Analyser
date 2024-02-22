@@ -9,6 +9,9 @@ def hash_password_bcrypt(password):
 
 def verify_password_bcrypt(stored_password_hash, provided_password):
     """Verify a stored password against one provided by user."""
+    # Ensure stored_password_hash is in byte format
+    if isinstance(stored_password_hash, str):
+        stored_password_hash = stored_password_hash.encode('utf-8')
     return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password_hash)
 
 # Example usage:
