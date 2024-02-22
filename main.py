@@ -35,12 +35,12 @@ async def hello_world():
 
 
 # User Calls
-@app.post("/create_user") # Creating a new user
+@app.post("/user/create") # Creating a new user
 async def create_new_user(user: UserCreate):
     create_user(user.username, user.password, user.email)
     return {"message": "User created successfully."}
 
-@app.get("/user") # Getting user by ID or username
+@app.get("/user/get") # Getting user by ID or username
 async def get_user(get_user: GetUser):
     if get_user.username:
         user_data = get_user_data_by_name(get_user.username)
@@ -58,14 +58,14 @@ async def get_user(get_user: GetUser):
         raise HTTPException(status_code=400, detail="Invalid request.")
     
     
-@app.post("/delete_user") # Deleting a user by ID
-async def delete_user(delete_user: DeleteUser):
-    user_id = delete_user.id
+@app.delete("/user/delete") # Deleting a user by ID
+async def delete_user_endpoint(delete_user_request: DeleteUser):
+    user_id = delete_user_request.id
 
     if user_id:
         user_data = get_user_data_by_id(user_id)
         if user_data:
-            delete_user(user_id)
+            delete_user(user_id)  # Assuming you have a function to delete a user by ID
             return {"message": "User deleted successfully."}
         else:
             raise HTTPException(status_code=404, detail="User not found.")
@@ -74,7 +74,7 @@ async def delete_user(delete_user: DeleteUser):
 
 
 # Login Calls
-@app.get("/login")  # Login function
+@app.get("/session/login")  # Login function
 async def user_login(login_data: Login):
     login_result = login(login_data.username, login_data.password)
     if login_result is not None:
@@ -83,14 +83,14 @@ async def user_login(login_data: Login):
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials.")
 
-@app.post("/is_session_cookie_valid")  # Check if the session cookie is valid
+@app.post("/session/is_session_cookie_valid")  # Check if the session cookie is valid
 async def check_session_cookie(session_cookie: SessionCookie):
     if is_session_cookie_valid(session_cookie.session_cookie):
         return {"message": "Session cookie is valid."}
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
     
-@app.post("/logout")  # Logout function
+@app.post("/session/logout")  # Logout function
 async def user_logout(session_cookie: SessionCookie):
     if is_session_cookie_valid(session_cookie.session_cookie):
         logout(session_cookie.session_cookie)
