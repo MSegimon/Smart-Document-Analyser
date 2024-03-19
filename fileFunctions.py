@@ -28,7 +28,7 @@ def upload_file(url, session_cookie):
     
     try:
         # SQL query to insert file into the database
-        query = "INSERT INTO files (user_id, body) VALUES (%s, %s, %s)"
+        query = "INSERT INTO files (user_id, body) VALUES (%s, %s)"
         values = (user_id, json.dumps(article_content),)
         
         # Execute the SQL command

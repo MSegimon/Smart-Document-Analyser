@@ -11,7 +11,7 @@ def filter_content(content, min_paragraph_length=80):
         if intermediate_content[i][0] == 'p':
             last_paragraph_index = i
             break
-    
+
     # If there's no paragraph at all, return an empty list to indicate no valid content
     if last_paragraph_index is None:
         return []
