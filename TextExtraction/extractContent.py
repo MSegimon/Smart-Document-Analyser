@@ -1,5 +1,5 @@
-from cleanText import filter_content, generate_json_from_content
-from webScrapper import scrape_article_content
+from TextExtraction.cleanText import filter_content, generate_json_from_content
+from TextExtraction.webScrapper import scrape_article_content
 
 def extract_content(url):
     # Scrape the article content
