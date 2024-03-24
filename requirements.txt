@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+bcrypt
+mysql-connector-python
+spacy
+spacytextblob
+beautifulsoup4
+requests
