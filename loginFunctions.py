@@ -4,6 +4,7 @@ import mysql.connector
 
 from db import getDBCursor, mydb
 from userFunctions import get_user_data_by_name, verify_password_bcrypt
+from inputValidation import validate_integer, escape_special_characters
 
 def generate_session_cookie(id):
     session_cookie = str(uuid.uuid4())
@@ -17,6 +18,10 @@ def insert_session_cookie(user_id, session_cookie, timestamp):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_integer(user_id) and not validate_integer(timestamp):
+            return None
+
         # SQL query to insert session cookie and timestamp
         query = "UPDATE users SET session_cookie = %s, session_cookie_timestamp = %s WHERE id = %s"
         values = (session_cookie, timestamp, user_id)
@@ -34,6 +39,10 @@ def insert_session_cookie(user_id, session_cookie, timestamp):
 
 # Login function
 def login(username, password):
+    # input validation
+    if not escape_special_characters(username) or not escape_special_characters(password):
+        return None
+
     user_data = get_user_data_by_name(username)
     
     if user_data:

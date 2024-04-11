@@ -3,6 +3,7 @@ import json
 
 from db import getDBCursor, mydb
 from TextExtraction.extractContent import extract_content
+from inputValidation import validate_integer, validate_url
 
 def upload_file(url, session_cookie):
     # Scrape the article content
@@ -14,6 +15,10 @@ def upload_file(url, session_cookie):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_url(url):
+            return None
+
         # SQL query to insert file into the database
         query = "INSERT INTO files (user_id, body) VALUES (%s, %s)"
         values = (user_id, json.dumps(article_content),)
@@ -36,6 +41,10 @@ def get_file_by_id(file_id, session_cookie):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_integer(file_id):
+            return None
+
         # SQL query to get file by ID and user ID
         query = "SELECT * FROM files WHERE id = %s AND user_id = %s"
         values = (file_id, user_id,)
@@ -63,6 +72,10 @@ def delete_file_by_id(file_id, session_cookie):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_integer(file_id):
+            return None
+
         # SQL query to delete file by ID and user ID
         query = "DELETE FROM files WHERE id = %s AND user_id = %s"
         values = (file_id, user_id,)

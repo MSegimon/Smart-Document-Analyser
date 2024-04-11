@@ -1,6 +1,8 @@
 import mysql.connector
 import bcrypt
+
 from db import getDBCursor, mydb
+from inputValidation import escape_special_characters, validate_email, validate_integer
 
 def hash_password_bcrypt(password):
     """Hash a password for storing."""
@@ -24,6 +26,10 @@ def create_user(username, password, email):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not escape_special_characters(username) or not escape_special_characters(password) or not validate_email(email):
+            return None
+
         # Hash the password
         password = hash_password_bcrypt(password)
         # SQL query to insert a new user
@@ -52,6 +58,10 @@ def get_user_data_by_name(username):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not escape_special_characters(username):
+            return None
+
         # SQL query to get a user by username
         query = "SELECT * FROM users WHERE username = %s"
         values = (username,)
@@ -88,6 +98,10 @@ def get_user_data_by_id(id):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_integer(id):
+            return None
+
         # SQL query to get a user by id
         query = "SELECT * FROM users WHERE id = %s"
         values = (id,)
@@ -124,6 +138,10 @@ def delete_user(id):
     mycursor = getDBCursor()
     
     try:
+        # input validation
+        if not validate_integer(id):
+            return None
+        
         # SQL query to delete a user by id
         query = "DELETE FROM users WHERE id = %s"
         values = (id,)
