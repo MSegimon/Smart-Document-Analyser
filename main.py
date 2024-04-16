@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, Request
 from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie, FileUpload, FileGet, FileDelete
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
 from loginFunctions import login, is_session_cookie_valid, logout
-from fileFunctions import upload_file, get_file_by_id, delete_file_by_id
+from fileFunctions import upload_file, get_file_by_id, delete_file_by_id, get_all_file_tittles
 
 app = FastAPI()
 
@@ -103,6 +103,14 @@ async def delete_file(file_delete: FileDelete):
     if is_session_cookie_valid(file_delete.session_cookie):
         delete_file_by_id(file_delete.id, file_delete.session_cookie)
         return {"message": "File deleted successfully."}
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+
+@app.get("/file/get_tittles")  # Get all file tittles for a user
+async def get_all_file_tittles(session_cookie: SessionCookie):
+    if is_session_cookie_valid(session_cookie.session_cookie):
+        get_all_file_tittles(session_cookie.session_cookie)
+        return {"message": "All file tittles retrieved successfully."}
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
 

@@ -90,3 +90,33 @@ def delete_file_by_id(file_id, session_cookie):
     finally:
         # Close the cursor and connection
         mycursor.close()
+
+def get_all_file_tittles(session_cookie):
+    # Get user ID from session cookie
+    user_id = session_cookie.split('-')[0]
+
+    mycursor = getDBCursor()
+    
+    try:
+        if not validate_integer(user_id):
+            return None
+
+        # SQL query to get all files by user ID
+        query = "SELECT * FROM files WHERE user_id = %s"
+        values = (user_id,)
+        
+        # Execute the SQL command
+        mycursor.execute(query, values)
+        
+        # Fetch the result
+        result = mycursor.fetchall()
+        
+        if result:
+            return [json.loads(row[2]) for row in result]
+        else:
+            return []
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        # Close the cursor and connection
+        mycursor.close()
