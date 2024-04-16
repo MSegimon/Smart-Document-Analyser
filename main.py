@@ -109,7 +109,7 @@ async def delete_file(file_delete: FileDelete):
 @app.get("/file/get_tittles")  # Get all file tittles for a user
 async def get_all_file_tittles(session_cookie: SessionCookie):
     if is_session_cookie_valid(session_cookie.session_cookie):
-        tittles = get_all_file_tittles(session_cookie.session_cookie)
+        tittles = await get_all_file_tittles(session_cookie.session_cookie)
         if tittles:
             return tittles
         else :

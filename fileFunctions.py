@@ -114,7 +114,7 @@ def get_all_file_tittles(session_cookie):
         if result:
             return [{"id": row[0], "title": json.loads(row[2])} for row in result]
         else:
-            return []
+            return None
     except mysql.connector.Error as err:
         print(f"Error: {err}")
     finally:
