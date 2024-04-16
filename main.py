@@ -109,8 +109,11 @@ async def delete_file(file_delete: FileDelete):
 @app.get("/file/get_tittles")  # Get all file tittles for a user
 async def get_all_file_tittles(session_cookie: SessionCookie):
     if is_session_cookie_valid(session_cookie.session_cookie):
-        get_all_file_tittles(session_cookie.session_cookie)
-        return {"message": "All file tittles retrieved successfully."}
+        tittles = get_all_file_tittles(session_cookie.session_cookie)
+        if tittles:
+            return tittles
+        else :
+            raise HTTPException(status_code=404, detail="No files found.")
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
 
