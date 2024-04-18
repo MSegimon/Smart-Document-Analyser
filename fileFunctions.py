@@ -91,7 +91,7 @@ def delete_file_by_id(file_id, session_cookie):
         # Close the cursor and connection
         mycursor.close()
 
-def get_all_file_tittles(session_cookie):
+def fetch_all_file_titles(session_cookie):
     # Get user ID from session cookie
     user_id = session_cookie.split('-')[0]
 
