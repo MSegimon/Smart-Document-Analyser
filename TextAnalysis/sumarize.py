@@ -40,7 +40,7 @@ def summarize(text):
                     sent_strength[sent] = freq_word[word.text]
 
     # Getting the summary (half sentences with the highest weight)
-    num_sent = int(len(sent_strength)/2)
+    num_sent = int(len(sent_strength)* 3/4)
     summary = nlargest(num_sent, sent_strength, key=sent_strength.get)
 
     # Convert summary to string

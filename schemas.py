@@ -32,3 +32,7 @@ class FileDelete(BaseModel):
 class FileGet(BaseModel):
     id: int
     session_cookie: str
+
+class AnalyseText(BaseModel):
+    id: int
+    session_cookie: str

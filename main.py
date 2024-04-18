@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 
-from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie, FileUpload, FileGet, FileDelete
+from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie, FileUpload, FileGet, FileDelete, AnalyseText
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
 from loginFunctions import login, is_session_cookie_valid, logout
 from fileFunctions import upload_file, get_file_by_id, delete_file_by_id, fetch_all_file_titles
@@ -116,7 +116,22 @@ async def get_all_file_tittles(session_cookie: SessionCookie):
             raise HTTPException(status_code=404, detail="No files found.")
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
-
+    
+# Text Analysis Calls
+@app.post("/text/summarize")  # Summarize text
+async def summarize_text(analysis_request: AnalyseText):
+    if is_session_cookie_valid(analysis_request.session_cookie):
+        return summarize_text(analysis_request.id, analysis_request.session_cookie)
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+    
+@app.post("/text/sentiment")  # Calculate sentiment of text
+async def calculate_sentiment(analysis_request: AnalyseText):
+    if is_session_cookie_valid(analysis_request.session_cookie):
+        return calculate_sentiment(analysis_request.id, analysis_request.session_cookie)
+    else:
+        raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
+    
 
 if __name__ == '__main__':
     import uvicorn
