@@ -112,7 +112,7 @@ def fetch_all_file_titles(session_cookie):
         result = mycursor.fetchall()
         
         if result:
-            return [{"id": row[0], "title": json.loads(row[2])} for row in result]
+            return [{"id": row[0], "title": json.loads(row[2])[0]['text']} for row in result]
         else:
             return None
     except mysql.connector.Error as err:
