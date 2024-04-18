@@ -4,6 +4,7 @@ from schemas import UserCreate, GetUser, DeleteUser, Login, SessionCookie, FileU
 from userFunctions import create_user, get_user_data_by_name, get_user_data_by_id, delete_user
 from loginFunctions import login, is_session_cookie_valid, logout
 from fileFunctions import upload_file, get_file_by_id, delete_file_by_id, fetch_all_file_titles
+from textAnalysisFunctions import summarize_text, calculate_sentiment
 
 app = FastAPI()
 
