@@ -7,21 +7,20 @@ from TextAnalysis.sumarize import summarize, extractKeywordsNormalized
 from inputValidation import validate_integer
 from fileFunctions import get_file_by_id
 
-def recursive_summarize(content, nezt_level=1):
+def recursive_summarize(content):
     """Recursively summarize text within nested HTML-like JSON structure."""
     combined_summaries = ""
     for item in content:
         # Check if current node has nested content
         if 'content' in item and item['content']:
             # Recursively summarize nested content
-            nested_summary = recursive_summarize(item['content'], nezt_level + 1)
+            nested_summary = recursive_summarize(item['content'])
             combined_summaries += " " + nested_summary
         else:
             # Directly append the text if there is no nested content
             combined_summaries += " " + item['text']
 
     # Combine all the summaries or texts from current level and summarize
-    print(nezt_level, combined_summaries)
     full_text = combined_summaries
     return summarize(full_text)
 

@@ -3,7 +3,8 @@ from spacytextblob.spacytextblob import SpacyTextBlob
 
 def calculate_sentiment_tone(text):
     nlp = spacy.load('en_core_web_sm')
-    nlp.add_pipe('spacytextblob')
+    text_blob = SpacyTextBlob()
+    nlp.add_pipe(text_blob, name='spacytextblob')
     doc = nlp(text)
     sentiment = doc._.blob.polarity
     tone = doc._.blob.subjectivity
