@@ -54,7 +54,7 @@ def recursive_sentiment(content):
             else:
                 # Calculate sentiment score for the text if there is no nested content
                 sentiment_score = calculate_sentiment_tone(item['text'])
-                sentiment_scores += sentiment_score[0]
+                sentiment_scores += sentiment_score
                 count += 1
 
         return sentiment_scores / count
