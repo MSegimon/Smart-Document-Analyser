@@ -73,6 +73,14 @@ def calculate_sentiment(id, session_cookie):
     
     # Calculate sentiment from the root level
     sentiment_scores = recursive_sentiment(file_content)
+
+    if sentiment_scores > 0.1:
+        return 1
+    elif sentiment_scores < -0.1:
+        return -1
+    else:
+        return 0
+
     return sentiment_scores
 
 
