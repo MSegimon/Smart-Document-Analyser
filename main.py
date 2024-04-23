@@ -120,14 +120,14 @@ async def get_all_file_tittles(session_cookie: SessionCookie):
     
 # Text Analysis Calls
 @app.post("/text/summarize")  # Summarize text
-async def summarize_text(analysis_request: AnalyseText):
+async def summarize_text_call(analysis_request: AnalyseText):
     if is_session_cookie_valid(analysis_request.session_cookie):
         return summarize_text(analysis_request.id, analysis_request.session_cookie)
     else:
         raise HTTPException(status_code=401, detail="Session cookie is invalid or expired.")
     
 @app.post("/text/sentiment")  # Calculate sentiment of text
-async def calculate_sentiment(analysis_request: AnalyseText):
+async def calculate_sentiment_call(analysis_request: AnalyseText):
     if is_session_cookie_valid(analysis_request.session_cookie):
         return calculate_sentiment(analysis_request.id, analysis_request.session_cookie)
     else:
