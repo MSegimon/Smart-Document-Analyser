@@ -1,3 +1,4 @@
+blis==0.7.11
 fastapi
 uvicorn
 pydantic
