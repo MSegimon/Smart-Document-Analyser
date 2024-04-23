@@ -7,3 +7,4 @@ spacy
 spacytextblob
 beautifulsoup4
 requests
+typing-extensions==4.7.0
