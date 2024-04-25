@@ -1,5 +1,7 @@
 import mysql.connector
 import json
+import redis
+from rq import Queue
 
 from db import getDBCursor, mydb
 from TextExtraction.extractContent import extract_content
@@ -33,6 +35,15 @@ def upload_file(url, session_cookie):
     finally:
         # Close the cursor and connection
         mycursor.close()
+
+def enqueue_file_upload(url, session_cookie):
+    # Connect to Redis server
+    redis_conn = redis.Redis()
+    queue = Queue(connection=redis_conn)  # default queue
+
+    # Enqueue the job
+    job = queue.enqueue(upload_file, url, session_cookie)
+    return job.id  # Optionally return the job ID for tracking status
 
 def get_file_by_id(file_id, session_cookie):
     # Get user ID from session cookie

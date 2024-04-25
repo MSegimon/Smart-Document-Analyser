@@ -1,5 +1,7 @@
 import mysql.connector
 import json
+import redis
+from rq import Queue
 
 from db import getDBCursor, mydb
 from TextAnalysis.sentiment import calculate_sentiment_tone
@@ -80,6 +82,20 @@ def calculate_sentiment(id, session_cookie):
         return -1
     else:
         return 0
+    
+def enqueue_summarize_text(file_id, session_cookie):
+    redis_conn = redis.Redis()
+    queue = Queue(connection=redis_conn)  # Default queue
+    # Enqueue the job
+    job = queue.enqueue(summarize_text, file_id, session_cookie)
+    return job.id  # Optionally return the job ID for tracking status
+
+def enqueue_calculate_sentiment(file_id, session_cookie):
+    redis_conn = redis.Redis()
+    queue = Queue(connection=redis_conn)  # Default queue
+    # Enqueue the job
+    job = queue.enqueue(calculate_sentiment, file_id, session_cookie)
+    return job.id  # Optionally return the job ID for tracking status
 
 
 # Test the summarize_text function
