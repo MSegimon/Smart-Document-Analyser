@@ -81,8 +81,6 @@ def calculate_sentiment(id, session_cookie):
     else:
         return 0
 
-    return sentiment_scores
-
 
 # Test the summarize_text function
 

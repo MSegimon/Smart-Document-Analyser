@@ -1,27 +1,30 @@
+from textblob import TextBlob
 import pytest
-from unittest.mock import patch
 from sentiment import calculate_sentiment_tone
 
-@pytest.mark.parametrize("polarity,expected_result", [
-    (0.1, 1),  # Positive sentiment
-    (-0.1, -1),  # Negative sentiment
-    (0.0, 0)  # Neutral sentiment
-])
+# Unit tests
 
-def test_calculate_sentiment_tone(polarity, expected_result):
-    with patch('sentiment.spacy.load') as mock_load:
-        mock_nlp = mock_load.return_value
-        mock_blob = mock_nlp.return_value._.blob
-        mock_blob.polarity = polarity
-        result, _ = calculate_sentiment_tone("Test text")
-        assert result == expected_result
+def test_positive_sentiment():
+    text = "I love this beautiful day"
+    sentiment = calculate_sentiment_tone(text)
+    assert sentiment > 0, "The sentiment should be positive"
 
-@pytest.mark.parametrize("text,expected", [
-    ("This is fantastic!", 1),  # Clearly positive
-    ("This is terrible.", -1),  # Clearly negative
-    ("", 0),  # Empty string
-    ("这是一个测试", 0)  # Non-English text
-])
-def test_varied_texts(text, expected):
-    result, _ = calculate_sentiment_tone(text)
-    assert result == expected
+def test_negative_sentiment():
+    text = "I hate this dreadful weather"
+    sentiment = calculate_sentiment_tone(text)
+    assert sentiment < 0, "The sentiment should be negative"
+
+def test_neutral_sentiment():
+    text = "This is a pen"
+    sentiment = calculate_sentiment_tone(text)
+    assert sentiment == 0, "The sentiment should be neutral"
+
+def test_empty_string():
+    text = ""
+    sentiment = calculate_sentiment_tone(text)
+    assert sentiment == 0, "The sentiment for an empty string should be neutral"
+
+def test_non_string_input():
+    text = 12345
+    with pytest.raises(TypeError):
+        calculate_sentiment_tone(text)
