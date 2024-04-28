@@ -23,6 +23,10 @@ uvicorn main:app --reload
 
 The API will be available at `http://localhost:8000`. You can access the interactive API documentation (Swagger UI) at `http://localhost:8000/docs`.
 
+### Test video
+
+https://zerosimple.net/projects/DocumentAnalyserDemoRecording.mp4
+
 ## Modules
 The Smart Document Analyser package consists of two main modules: Text Extraction and Text Analysis. These modules provide functionalities for extracting content from web articles, analyzing the sentiment of text, and generating summaries. They can be used independently or together to perform various text processing tasks. Below is an overview of each module:
 
